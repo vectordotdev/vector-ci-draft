@@ -89,8 +89,12 @@ jobs:
 
       - run: docker image prune -af ; docker container prune -f
 
+      # - run: |
+      #     if [[ ${{ github.event.pull_request.author_association }} == "MEMBER" || ${{ github.event.pull_request.author_association }} == "OWNER" ] ; then
+      #       echo "PR_AUTHOR_IS_MEMBMER=true" >> "$GITHUB_ENV"
+      #     fi
       - run: |
-          if [[ ${{ github.event.pull_request.author_association }} == "MEMBER" || ${{ github.event.pull_request.author_association }} == "OWNER" ] ; then
+          if [[ -z "${{ secrets.GH_PAT_ORG }}" ]] ; then
             echo "PR_AUTHOR_IS_MEMBMER=true" >> "$GITHUB_ENV"
           fi
 
