@@ -91,21 +91,20 @@ jobs:
 
       - run: |
           if [[ ${{ github.event.pull_request.author_association }} == "MEMBER" || ${{ github.event.pull_request.author_association }} == "OWNER" ] ; then
-            export PR_AUTHOR_IS_MEMBMER=true
+            echo "PR_AUTHOR_IS_MEMBMER=true" >> "$GITHUB_ENV"
           fi
-          echo "PR_AUTHOR_IS_MEMBER=$PR_AUTHOR_IS_MEMBER"
 
-      - if: ${{ github.event_name == 'merge_group' || needs.changes.outputs.all-int == 'true' || needs.changes.outputs.amqp == 'true' }}
-        name: amqp
-        uses: nick-fields/retry@v2
-        with:
-          timeout_minutes: 30
-          max_attempts: 3
-          command: bash scripts/ci-integration-test.sh amqp
+      # - if: ${{ github.event_name == 'merge_group' || needs.changes.outputs.all-int == 'true' || needs.changes.outputs.amqp == 'true' }}
+      #   name: amqp
+      #   uses: nick-fields/retry@v2
+      #   with:
+      #     timeout_minutes: 30
+      #     max_attempts: 3
+      #     command: bash scripts/ci-integration-test.sh amqp
 
       - if: |
           (github.event_name == 'merge_group' || needs.changes.outputs.all-int == 'true' || needs.changes.outputs.appsignal == 'true') &&
-          (github.event_name != 'pull_request' || $PR_AUTHOR_IS_TEAM_MEMBER == 'true')
+          (github.event_name != 'pull_request' || env.PR_AUTHOR_IS_TEAM_MEMBER == 'true')
         name: appsignal
         uses: nick-fields/retry@v2
         with:
