@@ -98,9 +98,9 @@ jobs:
           GH_PAT_ORG: ${{ secrets.GH_PAT_ORG }}
         run: |
           if [[ "$GH_PAT_ORG" != "" ]] ; then
-            echo "PR_AUTHOR_IS_TEAM_MEMBMER=true" >> "$GITHUB_ENV"
+            echo "PR_AUTHOR_IS_TEAM_MEMBER=true" >> "$GITHUB_ENV"
           else
-            echo "PR_AUTHOR_IS_TEAM_MEMBMER=false" >> "$GITHUB_ENV"
+            echo "PR_AUTHOR_IS_TEAM_MEMBER=false" >> "$GITHUB_ENV"
           fi
 
       - run: echo "hihi"
