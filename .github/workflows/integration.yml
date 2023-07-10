@@ -93,8 +93,11 @@ jobs:
       #     if [[ ${{ github.event.pull_request.author_association }} == "MEMBER" || ${{ github.event.pull_request.author_association }} == "OWNER" ] ; then
       #       echo "PR_AUTHOR_IS_MEMBMER=true" >> "$GITHUB_ENV"
       #     fi
-      - run: |
-          if [[ -z "${{ secrets.GH_PAT_ORG }}" ]] ; then
+      - name: determine if secrets are defined
+        env:
+          GH_PAT_ORG: ${{ secrets.GH_PAT_ORG }}
+        run: |
+          if [[ "$GH_PAT_ORG" != '' }} ]] ; then
             echo "PR_AUTHOR_IS_MEMBMER=true" >> "$GITHUB_ENV"
           fi
 
