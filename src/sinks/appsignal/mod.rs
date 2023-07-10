@@ -9,6 +9,8 @@
 #[cfg(all(test, feature = "appsignal-integration-tests"))]
 mod integration_tests;
 
+// hi
+
 use bytes::Bytes;
 use futures::{FutureExt, SinkExt};
 use http::{header::AUTHORIZATION, Request, Uri};
