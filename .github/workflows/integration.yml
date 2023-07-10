@@ -105,7 +105,7 @@ jobs:
 
       - if: |
           (github.event_name == 'merge_group' || needs.changes.outputs.all-int == 'true' || needs.changes.outputs.appsignal == 'true') &&
-          (github.event_name != 'pull_request' | PR_AUTHOR_IS_TEAM_MEMBER == 'true')
+          (github.event_name != 'pull_request' | $PR_AUTHOR_IS_TEAM_MEMBER == 'true')
         name: appsignal
         uses: nick-fields/retry@v2
         with:
