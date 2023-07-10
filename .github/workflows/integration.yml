@@ -42,21 +42,6 @@ jobs:
       head_ref: ${{ github.event.pull_request.head.ref  }}
     secrets: inherit
 
-  detect-user:
-    name: Detect user team membership
-    runs-on: ubuntu-latest
-    outputs:
-      IS_TEAM_MEMBER: ${{ steps.author.outputs.isTeamMember }}
-    steps:
-      - name: Get PR author
-        if: github.event_name == 'pull_request'
-        id: author
-        uses: tspascoal/get-user-teams-membership@v2
-        with:
-          username: ${{ github.actor }}
-          team: 'Vector'
-          GITHUB_TOKEN: ${{ secrets.GH_PAT_ORG }}
-
   integration-tests:
     name: Integration Tests
     runs-on: [linux, ubuntu-20.04-4core]
@@ -96,13 +81,19 @@ jobs:
     #       || needs.changes.outputs.splunk == 'true'
     #       || needs.changes.outputs.webhdfs == 'true'
     #   )
-    timeout-minutes: 120
+    timeout-minutes: 75
     steps:
       - uses: actions/checkout@v3
 
       - run: sudo npm -g install @datadog/datadog-ci
 
       - run: docker image prune -af ; docker container prune -f
+
+      - run: |
+          if [[ ${{ github.event.pull_request.author_association }} == "MEMBER" || ${{ github.event.pull_request.author_association }} == "OWNER" ] ; then
+            export PR_AUTHOR_IS_MEMBMER=true
+          fi
+          echo "PR_AUTHOR_IS_MEMBER=$PR_AUTHOR_IS_MEMBER"
 
       - if: ${{ github.event_name == 'merge_group' || needs.changes.outputs.all-int == 'true' || needs.changes.outputs.amqp == 'true' }}
         name: amqp
@@ -114,7 +105,7 @@ jobs:
 
       - if: |
           (github.event_name == 'merge_group' || needs.changes.outputs.all-int == 'true' || needs.changes.outputs.appsignal == 'true') &&
-          (github.event_name != 'pull_request' || needs.detect-user.outputs.IS_TEAM_MEMBER == 'true')
+          (github.event_name != 'pull_request' | PR_AUTHOR_IS_TEAM_MEMBER == 'true')
         name: appsignal
         uses: nick-fields/retry@v2
         with:
@@ -387,7 +378,7 @@ jobs:
     name: Integration Test Suite
     runs-on: ubuntu-latest
     if: always()
-    needs: integration-tests
+    needs: [changes, integration-tests]
     env:
       FAILED: ${{ contains(needs.*.result, 'failure') }}
     steps:
