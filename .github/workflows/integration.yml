@@ -99,7 +99,11 @@ jobs:
         run: |
           if [[ "$GH_PAT_ORG" != "" ]] ; then
             echo "PR_AUTHOR_IS_TEAM_MEMBMER=true" >> "$GITHUB_ENV"
+          else
+            echo "PR_AUTHOR_IS_TEAM_MEMBMER=false" >> "$GITHUB_ENV"
           fi
+
+      - run: echo "hihi"
 
       # - if: ${{ github.event_name == 'merge_group' || needs.changes.outputs.all-int == 'true' || needs.changes.outputs.amqp == 'true' }}
       #   name: amqp
