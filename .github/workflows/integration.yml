@@ -98,7 +98,7 @@ jobs:
           GH_PAT_ORG: ${{ secrets.GH_PAT_ORG }}
         run: |
           if [[ "$GH_PAT_ORG" != "" ]] ; then
-            echo "PR_AUTHOR_IS_MEMBMER=true" >> "$GITHUB_ENV"
+            echo "PR_AUTHOR_IS_TEAM_MEMBMER=true" >> "$GITHUB_ENV"
           fi
 
       # - if: ${{ github.event_name == 'merge_group' || needs.changes.outputs.all-int == 'true' || needs.changes.outputs.amqp == 'true' }}
